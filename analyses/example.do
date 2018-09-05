@@ -2,11 +2,12 @@
 
 version 15.1
 clear all
+include config
 set more off
 
 loc OUTCOME isolated
 
-use tmp/loneliness_cohorts
+use `"`tmp'/loneliness_cohorts"'
 // ren age _age
 // egen age = cut(_age), at(50(3)98)
 
