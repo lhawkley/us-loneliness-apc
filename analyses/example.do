@@ -17,7 +17,7 @@ rcsgen age, df(5) gen(age_s) orthog
 rcsgen yob, df(5) gen(bc_s) orthog
 
 // Decompose wave into orthogonal polynomials
-orthpoly wave, gen(_Owave*) deg(3)
+orthpoly wave, gen(_Owave*) deg(2)
 
 
 // Model age effect ignoring birth cohort
@@ -50,16 +50,15 @@ testparm age_s2-age_s5
 
 
 // Omit linear effect of wave to identify model
-ologit `OUTCOME' i.gender i.ethgrp _Owave2 _Owave3 age_s* bc_s*, vce(cluster su_id)
+ologit `OUTCOME' i.gender i.ethgrp _Owave2 age_s* bc_s*, vce(cluster su_id)
 estimates store m3
 testparm bc_s2-bc_s5
 testparm age_s2-age_s5
-testparm _Owave2 _Owave3
 
 
 // Plot results
 preserve
-    keep wave _Owave1 _Owave2 _Owave3
+    keep wave _Owave1 _Owave2
     duplicates drop
     gen byte _join = 1
     tempfile wave
