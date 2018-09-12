@@ -6,8 +6,6 @@ include config
 set more off
 
 use `"`tmp'/loneliness_cohorts"'
-gen loneliness = companion + leftout + isolated
-recode maritlst 1/2=1 3/6=0, gen(married)
 
 meologit loneliness i.gender i.educ i.ethgrp i.married c.age##c.age ///
     || su_id:, vce(robust)

@@ -5,21 +5,29 @@ clear all
 include config
 set more off
 
-loc varlist su_id gender ethgrp maritlst educ
-loc w1_vars `varlist' companion leftout isolated
-loc w2_vars `varlist' companion2 leftout2 isolated2
+loc varlist su_id gender ethgrp maritlst educ alters framt clsrel
+loc w1_vars `varlist' companion leftout isolated eyesight hearing
+loc w2_vars `varlist' companion2 leftout2 isolated2 moca_sa eyesight hearing
+loc w3_vars `varlist' companion2 leftout2 isolated2 moca_sa
 
-use `w1_vars' using `"`nshap_data'/w1/nshap_w1_core"'
+use `"`nshap_data'/w1/nshap_w1_core"'
+keep `w1_vars'
 gen byte wave = 1
 tempfile w1
 save `"`w1'"'
 
-use `w2_vars' using `"`nshap_data'/w2/nshap_w2_core"', clear
+use `"`nshap_data'/w2/nshap_w2_core"', clear
+run data_mgmt/netsize 2
+run data_mgmt/moca-sa
+keep `w2_vars'
 gen byte wave = 2
 tempfile w2
 save `"`w2'"'
 
-use `w2_vars' using `"`nshap_data'/w3/nshap_w3_core"', clear
+use `"`nshap_data'/w3/nshap_w3_core"', clear
+run data_mgmt/netsize 3
+run data_mgmt/moca-sa
+keep `w3_vars'
 gen byte wave = 3
 
 append using `"`w1'"' `"`w2'"'
@@ -31,6 +39,11 @@ foreach var of varlist companion leftout isolated {
 }
 
 merge 1:1 su_id wave using `"`tmp'/sample"', assert(master match) keep(match) nogen
+
+gen loneliness = companion + leftout + isolated
+recode maritlst 1/2=1 3/6=0, gen(married)
+// Recode Wave 1 to match other waves
+recode alters 6=5
 
 compress
 isid cohort su_id wave, so
