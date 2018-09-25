@@ -6,7 +6,7 @@ include config
 set more off
 
 loc varlist su_id gender ethgrp maritlst educ alters hh_size framt clsrel ///
-    physhlth comorb
+    physhlth comorb walkroom dressing bathing eating inoutbed toilet
 loc w1_vars `varlist' companion leftout isolated eyesight hearing
 loc w2_vars `varlist' companion2 leftout2 isolated2 moca_sa eyesight hearing
 loc w3_vars `varlist' companion2 leftout2 isolated2 moca_sa
@@ -51,6 +51,14 @@ merge 1:1 su_id wave using `"`tmp'/sample"', assert(master match) keep(match) no
 
 gen loneliness = companion + leftout + isolated
 recode maritlst 1/2=1 3/6=0, gen(married)
+
+// Exclude walkblk because it differs from others in what is required (fitness)
+// and its implications for social life (possibly less)
+gen adls = 0
+foreach var of varlist walkroom dressing bathing eating inoutbed toilet {
+    replace adls = adls + 1 if inlist(`var',1,2,3)
+    drop `var'
+}
 
 compress
 isid cohort su_id wave, so
