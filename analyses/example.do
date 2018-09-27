@@ -29,22 +29,22 @@ estimates store m02
 
 // Basic APC model ignoring within-respondent correlation, and using 10-year
 // grouping of birth cohorts to identify model
-ologit `OUTCOME' i.gender i.ethgrp i.wave i.bc age_s*, vce(cluster su_id)
+ologit `OUTCOME' i.gender i.ethgrp i.wave i.bc10 age_s*, vce(cluster su_id)
 estimates store m1
 mat b = e(b)
 testparm i.wave
-testparm i.bc
-contrast g.bc
+testparm i.bc10
+contrast g.bc10
 testparm age_s*
 testparm age_s2-age_s5
 
 // Re-estimate model with respondent-level random effects
-meologit `OUTCOME' i.gender i.ethgrp i.wave i.bc age_s* || su_id:, vce(robust) ///
+meologit `OUTCOME' i.gender i.ethgrp i.wave i.bc10 age_s* || su_id:, vce(robust) ///
     from(b)
 estimates store m2
 testparm i.wave
-testparm i.bc
-contrast g.bc
+testparm i.bc10
+contrast g.bc10
 testparm age_s*
 testparm age_s2-age_s5
 
@@ -66,7 +66,7 @@ preserve
 restore
 
 preserve
-    keep bc bc_s* yob
+    keep bc10 bc_s* yob
     duplicates drop
     gen byte _join = 1
     tempfile bc
