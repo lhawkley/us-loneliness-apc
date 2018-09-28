@@ -120,6 +120,7 @@ testparm wave#gender
 // is not present in the mixed-effects model below
 ologit loneliness age_s* i.wave bc10 [pweight=weight_sel2], vce(cluster su_id)
 ologit loneliness age_s* i.wave i.bc10 [pweight=weight_sel2], vce(cluster su_id)
+testparm age_s*
 testparm i.wave
 testparm i.bc10
 
@@ -127,6 +128,7 @@ meologit loneliness age_s* i.wave bc10 || su_id:, pweight(weight_sel2) ///
     vce(robust)
 meologit loneliness age_s* i.wave i.bc10 || su_id:, pweight(weight_sel2) ///
     vce(robust)
+testparm age_s*
 testparm i.wave
 testparm i.bc10
 
@@ -135,15 +137,18 @@ testparm i.bc10
 // the marginal model (i.e., without the random effect)
 ologit loneliness age_s* i.wave bc_s2-bc_s5 [pweight=weight_sel2], ///
     vce(cluster su_id)
+testparm age_s*
 testparm i.wave
 testparm bc_s*
 ologit loneliness age_s2-age_s5 i.wave bc_s* [pweight=weight_sel2], ///
     vce(cluster su_id)
+testparm age_s*
 testparm i.wave
 testparm bc_s*
 
 meologit loneliness age_s* i.wave bc_s2-bc_s5 || su_id:, pweight(weight_sel2) ///
     vce(robust)
+testparm age_s*
 testparm i.wave
 testparm bc_s*
 plot_age age1
@@ -152,6 +157,7 @@ plot_wave wave1
 
 meologit loneliness age_s2-age_s5 i.wave bc_s* || su_id:, pweight(weight_sel2) ///
     vce(robust)
+testparm age_s*
 testparm i.wave
 testparm bc_s*
 plot_age age2
