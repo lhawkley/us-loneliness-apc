@@ -116,6 +116,8 @@ testparm wave#gender
 
 // APC models
 // Discrete specification
+// Weak evidence of higher loneliness among those born in the 50s, but this
+// is not present in the mixed-effects model below
 ologit loneliness age_s* i.wave bc10 [pweight=weight_sel2], vce(cluster su_id)
 ologit loneliness age_s* i.wave i.bc10 [pweight=weight_sel2], vce(cluster su_id)
 testparm i.wave
@@ -129,6 +131,8 @@ testparm i.wave
 testparm i.bc10
 
 // Continuous specification
+// No evidence of cohort effect(s) with continuous specification, even with
+// the marginal model (i.e., without the random effect)
 ologit loneliness age_s* i.wave bc_s2-bc_s5 [pweight=weight_sel2], ///
     vce(cluster su_id)
 testparm i.wave
