@@ -8,6 +8,7 @@ set more off
 use `"`tmp'/loneliness_cohorts"'
 
 
+// Health characteristics
 // Exclude MoCA-SA and sensory items because they were not asked in all waves
 ologit loneliness i.wave c.age_dev_70##c.age_dev_70 i.gender i.ethgrp ib2.educ ///
     physhlth comorb adls ///
@@ -22,6 +23,7 @@ qui margins, predict(xb) at(age_dev_70=(-2(1)2)) nose
 marginsplot
 
 
+// Social characteristics
 ologit loneliness i.wave c.age_dev_70##c.age_dev_70 i.gender i.ethgrp ib2.educ ///
     i.liv_arrange alters clsrel framt ///
     [pweight=weight_sel2], vce(cluster su_id)
