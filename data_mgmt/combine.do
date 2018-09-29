@@ -49,8 +49,14 @@ foreach var of varlist companion leftout isolated {
 
 merge 1:1 su_id wave using `"`tmp'/sample"', assert(master match) keep(match) nogen
 
+sum age
+gen age_dev_70 = (age - 70) / 10
+
 gen loneliness = companion + leftout + isolated
 recode maritlst 1/2=1 3/6=0, gen(married)
+gen byte liv_arrange = 1 if married==1 & hh_size>0 & !mi(hh_size)
+replace liv_arrange = 2 if !hh_size
+replace liv_arrange = 3 if !married & hh_size>0 & !mi(hh_size)
 
 // Exclude walkblk because it differs from others in what is required (fitness)
 // and its implications for social life (possibly less)

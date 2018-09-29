@@ -7,23 +7,22 @@ set more off
 
 use `"`tmp'/loneliness_cohorts"'
 
-sum age
-replace age = (age - 70) / 10
-
-reg loneliness i.wave c.age##c.age i.gender i.ethgrp i.educ, vce(cluster su_id)
-reg loneliness i.wave c.age##c.age i.gender i.ethgrp i.educ ///
+reg loneliness i.wave c.age_dev_70##c.age_dev_70 i.gender i.ethgrp ib2.educ, ///
+    vce(cluster su_id)
+reg loneliness i.wave c.age_dev_70##c.age_dev_70 i.gender i.ethgrp ib2.educ ///
     [pweight=weight_sel2], vce(cluster su_id)
 
-ologit loneliness i.wave c.age##c.age i.gender i.ethgrp i.educ, vce(cluster su_id)
-ologit loneliness i.wave c.age##c.age i.gender i.ethgrp i.educ ///
+ologit loneliness i.wave c.age_dev_70##c.age_dev_70 i.gender i.ethgrp ib2.educ, ///
+    vce(cluster su_id)
+ologit loneliness i.wave c.age_dev_70##c.age_dev_70 i.gender i.ethgrp ib2.educ ///
     [pweight=weight_sel2], vce(cluster su_id)
 
-meologit loneliness i.wave c.age##c.age i.gender i.ethgrp i.educ || su_id:, ///
-    vce(robust)
-meologit loneliness i.wave c.age##c.age i.gender i.ethgrp i.educ || su_id:, ///
-    pweight(weight_sel2) vce(robust)
-nlcom (((-1) * _b[age] / (2 * _b[c.age#c.age])) * 10) + 70
-qui margins, predict(xb) at(age=(-2(1)2)) nose
+meologit loneliness i.wave c.age_dev_70##c.age_dev_70 i.gender i.ethgrp ib2.educ ///
+    || su_id:, vce(robust)
+meologit loneliness i.wave c.age_dev_70##c.age_dev_70 i.gender i.ethgrp ib2.educ ///
+    || su_id:, pweight(weight_sel2) vce(robust)
+nlcom (((-1) * _b[age_dev_70] / (2 * _b[c.age_dev_70#c.age_dev_70])) * 10) + 70
+qui margins, predict(xb) at(age_dev_70=(-2(1)2)) nose
 marginsplot
 lincom 3.wave - 2.wave
 
