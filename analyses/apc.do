@@ -12,7 +12,7 @@ rcsgen age, df(5) gen(age_s) orthog
 rcsgen yob, df(5) gen(bc_s) orthog
 
 prog plot_age
-    args name
+    syntax, name(string) [keep(varlist numeric) title(string)]
     preserve
     
     qui replace su_id = ""
@@ -22,8 +22,13 @@ prog plot_age
         sum `var'
         replace `var' = r(mean)
     }
+    if !mi("`keep'") {
+        qui foreach var of varlist `keep' {
+            replace `var' = 0
+        }
+    }
     
-    keep su_id loneliness age age_s* wave bc_s*
+    keep su_id loneliness age age_s* wave bc_s* `keep'
     duplicates drop
     predict xb, xb
     predict stdp, stdp
@@ -32,13 +37,14 @@ prog plot_age
     so age
     line xb age || rarea lb ub age, color(%30) lwidth(none) ///
         xscale(range(46 95)) xlab(45(10)95) xtitle("Age") ///
-        ytitle("Linear predictor") name(`name', replace) legend(off) yline(0)
+        ytitle("Linear predictor") name(`name', replace) legend(off) yline(0) ///
+        title(`"`title'"', pos(11))
     
     restore
 end
 
 prog plot_cohort
-    args name
+    syntax, name(string) [keep(varlist numeric) title(string)]
     preserve
     
     qui replace su_id = ""
@@ -48,8 +54,13 @@ prog plot_cohort
         sum `var'
         replace `var' = r(mean)
     }
+    if !mi("`keep'") {
+        qui foreach var of varlist `keep' {
+            replace `var' = 0
+        }
+    }
     
-    keep su_id loneliness yob age_s* wave bc_s*
+    keep su_id loneliness yob age_s* wave bc_s* `keep'
     duplicates drop
     predict xb, xb
     predict stdp, stdp
@@ -58,13 +69,14 @@ prog plot_cohort
     so yob
     line xb yob || rarea lb ub yob, color(%30) lwidth(none) ///
         xscale(range(1920 1965)) xlab(1920(10)1960) xtitle("Birth year") ///
-        ytitle("Linear predictor") name(`name', replace) legend(off) yline(0)
+        ytitle("Linear predictor") name(`name', replace) legend(off) yline(0) ///
+        title(`"`title'"', pos(11))
     
     restore
 end
 
 prog plot_wave
-    args name
+    syntax, name(string) [keep(varlist numeric) title(string)]
     preserve
     
     qui replace su_id = ""
@@ -73,8 +85,13 @@ prog plot_wave
         sum `var'
         replace `var' = r(mean)
     }
+    if !mi("`keep'") {
+        qui foreach var of varlist `keep' {
+            replace `var' = 0
+        }
+    }
     
-    keep su_id loneliness wave age_s* bc_s*
+    keep su_id loneliness wave age_s* bc_s* `keep'
     duplicates drop
     predict xb, xb
     predict stdp, stdp
@@ -84,7 +101,7 @@ prog plot_wave
     gen ub = xb + (2 * stdp) if wave!=1
     tw rcap ub lb wave || sc xb wave, name(`name', replace) legend(off) ///
         xlab(1 "2005-06" 2 "2010-11" 3 "2015-16") xtitle("Survey year") ///
-        ms(circle) yline(0)
+        ms(circle) yline(0) ytitle("Linear predictor") title(`"`title'"', pos(11))
     
     restore
 end
@@ -151,19 +168,47 @@ meologit loneliness age_s* i.wave bc_s2-bc_s5 || su_id:, pweight(weight_sel2) //
 testparm age_s*
 testparm i.wave
 testparm bc_s*
-plot_age age1
-plot_cohort cohort1
-plot_wave wave1
+plot_age, name(age1) title("A")
+plot_cohort, name(cohort1) title("B")
+plot_wave, name(wave1) title("C")
 
 meologit loneliness age_s2-age_s5 i.wave bc_s* || su_id:, pweight(weight_sel2) ///
     vce(robust)
 testparm age_s*
 testparm i.wave
 testparm bc_s*
-plot_age age2
-plot_cohort cohort2
-plot_wave wave2
+plot_age, name(age2) title("D")
+plot_cohort, name(cohort2) title("E")
+plot_wave, name(wave2) title("F")
 
-gr combine age1 cohort1 wave1 age2 cohort2 wave2, cols(3) ycommon
+gr combine age1 cohort1 wave1 age2 cohort2 wave2, cols(3) ycommon name(apc, replace)
 mkdirp tmp
-graph export tmp/apc.pdf, replace
+gr export tmp/apc.pdf, replace
+gr export tmp/apc.eps, replace
+
+
+// Plot age and survey year effects for full model
+gen female = (gender==2) if !mi(gender)
+gen aa = (ethgrp==2) if !mi(ethgrp)
+gen hisp = (ethgrp==3) if !mi(ethgrp)
+gen other = (ethgrp==4) if !mi(ethgrp)
+gen lths = (educ==1) if !mi(educ)
+gen somecol = (educ==3) if !mi(educ)
+gen college = (educ==4) if !mi(educ)
+gen liv_alone = (liv_arrange==2) if !mi(liv_arrange)
+gen liv_other = (liv_arrange==3) if !mi(liv_arrange)
+meologit loneliness age_s1 age_s2 i.wave ///
+    female aa hisp other lths somecol college ///
+    physhlth comorb adls ///
+    liv_alone liv_other alters clsrel framt ///
+    || su_id:, pweight(weight_sel2) vce(robust)
+plot_age, keep(female aa hisp other lths somecol college physhlth ///
+               comorb adls liv_alone liv_other alters clsrel framt) ///
+          name(age3) title("D")
+plot_wave, keep(female aa hisp other lths somecol college physhlth ///
+                comorb adls liv_alone liv_other alters clsrel framt) ///
+           name(wave3) title("E")
+
+gr combine age1 cohort1 wave1 age3 wave3, cols(3) ycommon name(apc2, replace)
+gr export tmp/apc2.pdf, replace
+gr export tmp/apc2.eps, replace

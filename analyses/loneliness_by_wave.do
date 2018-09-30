@@ -14,12 +14,15 @@ save `"`mydata'"'
 // Generate plot for men
 keep if gender==1
 reg loneliness agesp* if wave==1 [pweight=weight_sel], vce(robust)
+testparm agesp2-agesp4
 predict p11 if e(sample)
 predict se11 if e(sample), stdp
 reg loneliness agesp* if wave==2 [pweight=weight_sel], vce(robust)
+testparm agesp2-agesp4
 predict p12 if e(sample)
 predict se12 if e(sample), stdp
 reg loneliness agesp* if wave==3 [pweight=weight_sel], vce(robust)
+testparm agesp2-agesp4
 predict p13 if e(sample)
 predict se13 if e(sample), stdp
 
@@ -44,12 +47,15 @@ line p11 age, lcolor("0 63 92") || rarea lb11 ub11 age, color("0 63 92%40") lwid
 use `"`mydata'"', clear
 keep if gender==2
 reg loneliness agesp* if wave==1 [pweight=weight_sel], vce(robust)
+testparm agesp2-agesp4
 predict p11 if e(sample)
 predict se11 if e(sample), stdp
 reg loneliness agesp* if wave==2 [pweight=weight_sel], vce(robust)
+testparm agesp2-agesp4
 predict p12 if e(sample)
 predict se12 if e(sample), stdp
 reg loneliness agesp* if wave==3 [pweight=weight_sel], vce(robust)
+testparm agesp2-agesp4
 predict p13 if e(sample)
 predict se13 if e(sample), stdp
 
@@ -71,4 +77,5 @@ line p11 age, lcolor("0 63 92") || rarea lb11 ub11 age, color("0 63 92%40") lwid
 
 gr combine men women, rows(1) ycommon
 mkdirp tmp
-graph export tmp/loneliness.pdf, replace
+gr export tmp/loneliness.pdf, replace
+gr export tmp/loneliness.eps, replace
