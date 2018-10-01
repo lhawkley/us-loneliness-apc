@@ -6,7 +6,7 @@ include config
 set more off
 
 use `"`tmp'/loneliness_cohorts"'
-mkspline agesp = age, cubic nknots(5)
+rcsgen age, df(4) gen(agesp) orthog
 tempfile mydata
 save `"`mydata'"'
 

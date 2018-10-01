@@ -8,8 +8,8 @@ set more off
 use `"`tmp'/loneliness_cohorts"'
 
 // Generate orthogonal polynomials for age and yob
-rcsgen age, df(5) gen(age_s) orthog
-rcsgen yob, df(5) gen(bc_s) orthog
+rcsgen age, df(4) gen(age_s) orthog
+rcsgen yob, df(4) gen(bc_s) orthog
 
 prog plot_age
     syntax, name(string) [keep(varlist numeric) title(string)]
@@ -152,18 +152,18 @@ testparm i.bc10
 // Continuous specification
 // No evidence of cohort effect(s) with continuous specification, even with
 // the marginal model (i.e., without the random effect)
-ologit loneliness age_s* i.wave bc_s2-bc_s5 [pweight=weight_sel2], ///
+ologit loneliness age_s* i.wave bc_s2-bc_s4 [pweight=weight_sel2], ///
     vce(cluster su_id)
 testparm age_s*
 testparm i.wave
 testparm bc_s*
-ologit loneliness age_s2-age_s5 i.wave bc_s* [pweight=weight_sel2], ///
+ologit loneliness age_s2-age_s4 i.wave bc_s* [pweight=weight_sel2], ///
     vce(cluster su_id)
 testparm age_s*
 testparm i.wave
 testparm bc_s*
 
-meologit loneliness age_s* i.wave bc_s2-bc_s5 || su_id:, pweight(weight_sel2) ///
+meologit loneliness age_s* i.wave bc_s2-bc_s4 || su_id:, pweight(weight_sel2) ///
     vce(robust)
 testparm age_s*
 testparm i.wave
@@ -172,7 +172,7 @@ plot_age, name(age1) title("A")
 plot_cohort, name(cohort1) title("B")
 plot_wave, name(wave1) title("C")
 
-meologit loneliness age_s2-age_s5 i.wave bc_s* || su_id:, pweight(weight_sel2) ///
+meologit loneliness age_s2-age_s4 i.wave bc_s* || su_id:, pweight(weight_sel2) ///
     vce(robust)
 testparm age_s*
 testparm i.wave
