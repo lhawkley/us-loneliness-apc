@@ -28,3 +28,7 @@ lincom 3.wave - 2.wave
 
 meologit, or
 lincom 3.wave - 2.wave, or
+
+// Test linear effect of education
+meologit loneliness i.wave c.age_dev_70##c.age_dev_70 i.gender i.ethgrp educ ///
+    || su_id:, pweight(weight_sel2) vce(robust)

@@ -57,10 +57,13 @@ qui svy, subpop(if inrange(yob,1948,1965) & wave==3): ///
     i.liv_arrange alters clsrel framt
 estimates store m2
 suest m1 m2
+test [m1_loneliness]3.ethgrp = [m2_loneliness]3.ethgrp
 test [m1_loneliness]physhlth = [m2_loneliness]physhlth
 test [m1_loneliness]adls = [m2_loneliness]adls
+test [m1_loneliness]2.liv_arrange = [m2_loneliness]2.liv_arrange
 test [m1_loneliness]3.liv_arrange = [m2_loneliness]3.liv_arrange
 test [m1_loneliness]clsrel = [m2_loneliness]clsrel
+test [m1_loneliness]framt = [m2_loneliness]framt
 
 
 // Repeat 1920-47 with data from Waves 1 and 2, for comparison
