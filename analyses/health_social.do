@@ -74,7 +74,9 @@ meologit loneliness i.wave age_s2-age_s4 bc_s* i.gender i.ethgrp ib2.educ ///
     || su_id:, pweight(weight_sel2) vce(robust)
 testparm age_s*
 testparm bc_s*
-meologit loneliness age_s* bc_s* i.gender i.ethgrp ib2.educ ///
+gen byte w2 = (wave==2)
+// TODO Might consider adding this model/test(s) to manuscript!
+meologit loneliness age_s* bc_s* i.gender i.ethgrp ib2.educ w2 ///
     physhlth comorb adls ///
     i.liv_arrange alters clsrel framt ///    
     || su_id:, pweight(weight_sel2) vce(robust)
