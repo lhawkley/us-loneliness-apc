@@ -9,4 +9,5 @@ loc raw_data data/raw_data
 loc nshap_data data/nshap
 
 // Location of temporary files and other output
+mkdirp tmp
 loc tmp tmp
