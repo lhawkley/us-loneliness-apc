@@ -6,7 +6,7 @@ version 15.1
 clear
 include config
 
-use su_id age weight_sel using `"`nshap_data'/w1/nshap_w1_core"'
+use su_id age weight_sel weight_adj using `"`nshap_data'/w1/nshap_w1_core"'
 merge 1:1 su_id using `"`raw_data'/w1/interview_data/capi/nshap_final_capi"', ///
     assert(match) nogen keepusing(ageyear)
 merge 1:1 su_id using `"`nshap_data'/w2/nshap_w2_core"', keep(master match) ///
@@ -21,7 +21,7 @@ gen byte wave = 1
 tempfile w1
 save `"`w1'"'
 
-use su_id age weight_sel using `"`nshap_data'/w2/nshap_w2_core"'
+use su_id age weight_sel weight_adj using `"`nshap_data'/w2/nshap_w2_core"'
 ren su_id SU_ID
 merge 1:1 SU_ID using `"`raw_data'/w2/main_capi_2011-08-05/nshapw2_main_results"', ///
     assert(match) nogen keepusing(ageyear)
@@ -36,23 +36,14 @@ gen byte wave = 2
 tempfile w2
 save `"`w2'"'
 
-use su_id surveytype3 age using `"`nshap_data'/w3/nshap_w3_core"'
+use su_id surveytype3 age weight_sel weight_adj using `"`nshap_data'/w3/nshap_w3_core"'
 merge 1:1 su_id using `"`raw_data'/w3/capi/nshapw3_main"', assert(match) ///
     nogen keepusing(ageyear)
 ren ageyear yob
 replace yob = . if yob == -5
-merge 1:1 su_id using `"`raw_data'/w3/weights_1/wt1_rr_deliver"', ///
-    keep(master match) keepusing(w1) nogen
-gen suid = su_id
-merge 1:1 suid using `"`raw_data'/w3/weights_1/wt1_nc_deliver"', ///
-    keep(master match_update) keepusing(w1) update
-ren w1 weight_sel
-gen double weight_sel2 = weight_sel if _merge==4
-sum weight_sel
-replace weight_sel = weight_sel * (r(N)/r(sum))
+gen double weight_sel2 = weight_sel if surveytype==2
 sum weight_sel2
 replace weight_sel2 = weight_sel2 * (r(N)/r(sum))
-drop suid _merge
 merge 1:1 su_id using `"`w1'"', keepusing(yob weight_sel2) update nogen ///
     assert(master using match match_update) keep(master match match_update)
 merge 1:1 su_id using `"`w2'"', keepusing(yob weight_sel2) update nogen ///
