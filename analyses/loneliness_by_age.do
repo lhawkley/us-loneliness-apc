@@ -95,7 +95,7 @@ gen ub = p + (2 * se)
 
 // Plot 2014-16
 so age
-line p age if gender==1 & !hrs, lcolor("0 63 92") lpattern(dash) ///
+line p age if gender==1 & !hrs, lcolor("0 63 92") lpattern(shortdash) ///
     || rarea lb ub age if gender==1 & !hrs, color("0 63 92%40") lwidth(none) ///
     || line p age if gender==1 & hrs & yr==14, lcolor("188 80 144") ///
     || rarea lb ub age if gender==1 & hrs & yr==14, color("188 80 144%40") lwidth(none) ///
@@ -103,7 +103,7 @@ line p age if gender==1 & !hrs, lcolor("0 63 92") lpattern(dash) ///
     legend(order(1 "NSHAP 2015-16" 3 "HRS 2014") ring(0) pos(1) cols(1)) ///
     ytitle("Mean loneliness") xtitle("Age") subtitle("Men") name(men)
 
-line p age if gender==2 & !hrs, lcolor("0 63 92") lpattern(dash) ///
+line p age if gender==2 & !hrs, lcolor("0 63 92") lpattern(shortdash) ///
     || rarea lb ub age if gender==2 & !hrs, color("0 63 92%40") lwidth(none) ///
     || line p age if gender==2 & hrs & yr==14, lcolor("188 80 144") ///
     || rarea lb ub age if gender==2 & hrs & yr==14, color("188 80 144%40") lwidth(none) ///
@@ -118,7 +118,7 @@ gr export `"`tmp'/loneliness_hrs14.eps"', replace
 
 // Plot 2015-16
 so age
-line p age if gender==1 & !hrs, lcolor("0 63 92") lpattern(dash) ///
+line p age if gender==1 & !hrs, lcolor("0 63 92") lpattern(shortdash) ///
     || rarea lb ub age if gender==1 & !hrs, color("0 63 92%40") lwidth(none) ///
     || line p age if gender==1 & hrs & yr==16, lcolor("188 80 144") ///
     || rarea lb ub age if gender==1 & hrs & yr==16, color("188 80 144%40") lwidth(none) ///
@@ -126,7 +126,7 @@ line p age if gender==1 & !hrs, lcolor("0 63 92") lpattern(dash) ///
     legend(order(1 "NSHAP 2015-16" 3 "HRS 2016") ring(0) pos(1) cols(1)) ///
     ytitle("Mean loneliness") xtitle("Age") subtitle("Men") name(men, replace)
 
-line p age if gender==2 & !hrs, lcolor("0 63 92") lpattern(dash) ///
+line p age if gender==2 & !hrs, lcolor("0 63 92") lpattern(shortdash) ///
     || rarea lb ub age if gender==2 & !hrs, color("0 63 92%40") lwidth(none) ///
     || line p age if gender==2 & hrs & yr==16, lcolor("188 80 144") ///
     || rarea lb ub age if gender==2 & hrs & yr==16, color("188 80 144%40") lwidth(none) ///

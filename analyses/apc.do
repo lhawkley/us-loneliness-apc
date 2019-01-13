@@ -7,12 +7,12 @@ set more off
 
 use `"`tmp'/loneliness_cohorts"'
 
-// Generate orthogonal polynomials for age and yob
+// Generate orthogonal spline variables for age and yob
 rcsgen age, df(4) gen(age_s) orthog
 rcsgen yob, df(4) gen(bc_s) orthog
 
 prog plot_age
-    syntax, name(string) [keep(varlist numeric) title(string)]
+    syntax, name(string) [keep(varlist numeric) title(string) saving(string) replace]
     preserve
     
     qui replace su_id = ""
@@ -34,17 +34,22 @@ prog plot_age
     predict stdp, stdp
     gen lb = xb - (2 * stdp)
     gen ub = xb + (2 * stdp)
-    so age
+    isid age, so
     line xb age || rarea lb ub age, color(%30) lwidth(none) ///
-        xscale(range(46 95)) xlab(45(10)95) xtitle("Age") ///
+        xscale(range(50 95)) xlab(50(10)90) xtitle("Age") ///
         ytitle("Linear predictor") name(`name', replace) legend(off) yline(0) ///
         title(`"`title'"', pos(11))
+    
+    if !mi(`"`saving'"') {
+        keep xb lb ub age
+        save `"`saving'"', `replace'
+    }
     
     restore
 end
 
 prog plot_cohort
-    syntax, name(string) [keep(varlist numeric) title(string)]
+    syntax, name(string) [keep(varlist numeric) title(string) saving(string) replace]
     preserve
     
     qui replace su_id = ""
@@ -66,17 +71,22 @@ prog plot_cohort
     predict stdp, stdp
     gen lb = xb - (2 * stdp)
     gen ub = xb + (2 * stdp)
-    so yob
+    isid yob, so
     line xb yob || rarea lb ub yob, color(%30) lwidth(none) ///
         xscale(range(1920 1965)) xlab(1920(10)1960) xtitle("Birth year") ///
         ytitle("Linear predictor") name(`name', replace) legend(off) yline(0) ///
         title(`"`title'"', pos(11))
     
+    if !mi(`"`saving'"') {
+        keep xb lb ub yob
+        save `"`saving'"', `replace'
+    }
+    
     restore
 end
 
 prog plot_wave
-    syntax, name(string) [keep(varlist numeric) title(string)]
+    syntax, name(string) [keep(varlist numeric) title(string) saving(string) replace]
     preserve
     
     qui replace su_id = ""
@@ -95,13 +105,19 @@ prog plot_wave
     duplicates drop
     predict xb, xb
     predict stdp, stdp
-    // Wihtout constant, at Wave 1 SD is effectively 0
+    // Without constant, at Wave 1 SD is effectively 0
     li wave xb stdp
     gen lb = xb - (2 * stdp) if wave!=1
     gen ub = xb + (2 * stdp) if wave!=1
+    isid wave, so
     tw rcap ub lb wave || sc xb wave, name(`name', replace) legend(off) ///
         xlab(1 "2005-06" 2 "2010-11" 3 "2015-16") xtitle("Survey year") ///
         ms(circle) yline(0) ytitle("Linear predictor") title(`"`title'"', pos(11))
+    
+    if !mi(`"`saving'"') {
+        keep xb lb ub wave
+        save `"`saving'"', `replace'
+    }
     
     restore
 end
@@ -168,9 +184,10 @@ meologit loneliness age_s* i.wave bc_s2-bc_s4 || su_id:, pweight(weight_sel2) //
 testparm age_s*
 testparm i.wave
 testparm bc_s*
-plot_age, name(age1) title("A")
-plot_cohort, name(cohort1) title("B")
-plot_wave, name(wave1) title("C")
+mkdirp `"`tmp'/apc"'
+plot_age, name(age1) title("A") saving(`"`tmp'/apc/nshap_age"') replace
+plot_cohort, name(cohort1) title("B") saving(`"`tmp'/apc/nshap_cohort"') replace
+plot_wave, name(wave1) title("C") saving(`"`tmp'/apc/nshap_period"') replace
 
 meologit loneliness age_s2-age_s4 i.wave bc_s* || su_id:, pweight(weight_sel2) ///
     vce(robust)
@@ -181,10 +198,17 @@ plot_age, name(age2) title("D")
 plot_cohort, name(cohort2) title("E")
 plot_wave, name(wave2) title("F")
 
+// Yet another specification; still no evidence of any cohort effects
+gen byte w2 = (wave==2)
+meologit loneliness age_s* w2 bc_s* || su_id:, pweight(weight_sel2) ///
+    vce(robust)
+testparm age_s*
+testparm bc_s*
+
 gr combine age1 cohort1 wave1 age2 cohort2 wave2, cols(3) ycommon name(apc, replace)
 mkdirp tmp
-gr export tmp/apc.pdf, replace
-gr export tmp/apc.eps, replace
+gr export `"`tmp'/apc/apc_nshap.pdf"', replace
+gr export `"`tmp'/apc/apc_nshap.eps"', replace
 
 
 // Plot age and survey year effects for full model
@@ -204,11 +228,11 @@ meologit loneliness age_s1 age_s2 i.wave ///
     || su_id:, pweight(weight_sel2) vce(robust)
 plot_age, keep(female aa hisp other lths somecol college physhlth ///
                comorb adls liv_alone liv_other alters clsrel framt) ///
-          name(age3) title("D")
+          name(age3) title("D") saving(`"`tmp'/apc/nshap_age_adj"')
 plot_wave, keep(female aa hisp other lths somecol college physhlth ///
                 comorb adls liv_alone liv_other alters clsrel framt) ///
-           name(wave3) title("E")
+           name(wave3) title("E") saving(`"`tmp'/apc/nshap_period_adj"')
 
 gr combine age1 cohort1 wave1 age3 wave3, cols(3) ycommon name(apc2, replace)
-gr export tmp/apc2.pdf, replace
-gr export tmp/apc2.eps, replace
+gr export `"`tmp'/apc/apc_nshap2.pdf"', replace
+gr export `"`tmp'/apc/apc_nshap2.eps"', replace
