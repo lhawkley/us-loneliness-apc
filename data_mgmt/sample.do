@@ -58,6 +58,7 @@ bys su_id (weight_sel2): ass weight_sel2 == weight_sel2[1] if !mi(weight_sel2)
 bys su_id (weight_sel2): replace weight_sel2 = weight_sel2[1] if mi(weight_sel2)
 
 drop if !inrange(yob,1920,1965)
+drop if !inrange(age,50,95)
 egen bc3 = cut(yob), at(1920 1934 1948 1966)
 egen bc10 = cut(yob), at(1920(10)1970)
 

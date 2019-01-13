@@ -26,6 +26,9 @@ corr wgtr wgtr2 if wgtr!=wgtr2
 
 ren birthyr yob
 ass inrange(yob,1920,1965)
+drop if !inrange(age,50,95)
+egen bc3 = cut(yob), at(1920 1934 1948 1966)
+egen bc10 = cut(yob), at(1920(10)1970)
 
 compress
 isid su_id yr, so
