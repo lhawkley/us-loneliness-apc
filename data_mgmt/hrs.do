@@ -1,11 +1,15 @@
-// Changes to Kristen's HRS file to facilitate analysis
+// Prepare HRS dataset for analysis
 
 version 15.1
 clear all
 include config
 set more off
 
-use data/loneliness_dataset
+// Run Kristen's do-files
+run data_mgmt/hrs/tracker
+run data_mgmt/hrs/social
+run data_mgmt/hrs/loneliness_dataset
+
 drop _merge
 
 egen su_id = group(hhid pn)
@@ -16,7 +20,8 @@ ren yr_ yr
 
 // Use previous weight for 2016
 bys hhid pn (yr): replace wgtr = wgtr[_n-1] if yr==16 & mi(wgtr)
-ass !mi(wgtr)
+// Drop these cases because weights are not yet available for them
+drop if mi(wgtr)
 
 // Create weights constant within individual
 gen double wgtr2 = wgtr
