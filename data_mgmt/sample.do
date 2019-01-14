@@ -6,10 +6,10 @@ version 15.1
 clear
 include config
 
-use su_id age weight_sel weight_adj using `"`nshap_data'/w1/nshap_w1_core"'
-merge 1:1 su_id using `"`raw_data'/w1/interview_data/capi/nshap_final_capi"', ///
+use su_id age weight_sel weight_adj using `"`nshap_release'/w1/nshap_w1_core"'
+merge 1:1 su_id using `"`nshap_capi'/w1/interview_data/capi/nshap_final_capi"', ///
     assert(match) nogen keepusing(ageyear)
-merge 1:1 su_id using `"`nshap_data'/w2/nshap_w2_core"', keep(master match) ///
+merge 1:1 su_id using `"`nshap_release'/w2/nshap_w2_core"', keep(master match) ///
     keepusing(su_id) nolabel
 gen weight_sel2 = weight_sel if _merge==1
 sum weight_sel2
@@ -21,9 +21,9 @@ gen byte wave = 1
 tempfile w1
 save `"`w1'"'
 
-use su_id age weight_sel weight_adj using `"`nshap_data'/w2/nshap_w2_core"'
+use su_id age weight_sel weight_adj using `"`nshap_release'/w2/nshap_w2_core"'
 ren su_id SU_ID
-merge 1:1 SU_ID using `"`raw_data'/w2/main_capi_2011-08-05/nshapw2_main_results"', ///
+merge 1:1 SU_ID using `"`nshap_capi'/w2/main_capi_2011-08-05/nshapw2_main_results"', ///
     assert(match) nogen keepusing(ageyear)
 ren SU_ID su_id
 gen weight_sel2 = weight_sel
@@ -36,8 +36,8 @@ gen byte wave = 2
 tempfile w2
 save `"`w2'"'
 
-use su_id surveytype3 age weight_sel weight_adj using `"`nshap_data'/w3/nshap_w3_core"'
-merge 1:1 su_id using `"`raw_data'/w3/capi/nshapw3_main"', assert(match) ///
+use su_id surveytype3 age weight_sel weight_adj using `"`nshap_release'/w3/nshap_w3_core"'
+merge 1:1 su_id using `"`nshap_capi'/w3/capi/nshapw3_main"', assert(match) ///
     nogen keepusing(ageyear)
 ren ageyear yob
 replace yob = . if yob == -5

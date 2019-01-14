@@ -11,7 +11,7 @@ loc w1_vars `varlist' companion leftout isolated eyesight hearing
 loc w2_vars `varlist' companion2 leftout2 isolated2 moca_sa eyesight hearing
 loc w3_vars `varlist' companion2 leftout2 isolated2 moca_sa
 
-use `"`nshap_data'/w1/nshap_w1_core"'
+use `"`nshap_release'/w1/nshap_w1_core"'
 run data_mgmt/hhsize 1
 run data_mgmt/comorb 1
 keep `w1_vars'
@@ -21,7 +21,7 @@ gen byte wave = 1
 tempfile w1
 save `"`w1'"'
 
-use `"`nshap_data'/w2/nshap_w2_core"', clear
+use `"`nshap_release'/w2/nshap_w2_core"', clear
 run data_mgmt/netsize 2
 run data_mgmt/hhsize 2
 run data_mgmt/comorb 2
@@ -31,7 +31,7 @@ gen byte wave = 2
 tempfile w2
 save `"`w2'"'
 
-use `"`nshap_data'/w3/nshap_w3_core"', clear
+use `"`nshap_release'/w3/nshap_w3_core"', clear
 run data_mgmt/netsize 3
 run data_mgmt/hhsize 3
 run data_mgmt/comorb 3

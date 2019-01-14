@@ -6,7 +6,7 @@ include config
 args wave
 
 preserve
-    use `"`nshap_data'/w`wave'/nshap_w`wave'_network"', clear
+    use `"`nshap_release'/w`wave'/nshap_w`wave'_network"', clear
     egen hh_size = total(inlist(livewith,1,2)), by(su_id)
     keep su_id hh_size
     duplicates drop

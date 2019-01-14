@@ -6,7 +6,7 @@ include config
 args wave
 
 preserve
-    use `"`nshap_data'/w`wave'/nshap_w`wave'_network"'
+    use `"`nshap_release'/w`wave'/nshap_w`wave'_network"'
     egen alters = total(section==1), by(su_id)
     keep su_id alters
     duplicates drop

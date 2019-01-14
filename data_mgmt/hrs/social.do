@@ -2,17 +2,21 @@
 
 version 15.1
 clear all
+include config
+
+cap mkdir `"`tmp'/hrs"'
 
 prog _lb_r
-    syntax anything, year(string) prefix(string) [drive(string)]
+    syntax anything, year(string) prefix(string) [drive(string) ///
+                                                  hrs_release(string) tmp(string)]
     loc yr = substr("`year'",3,.)
     if mi("`drive'") loc drive c
-    copy data/hrs/h`yr'core/H`yr'LB_R.da tmp/hrs/H`yr'LB_R.da, replace
-    filefilter data/hrs/h`yr'core/H`yr'LB_R.dct tmp/hrs/H`yr'LB_R.dct, ///
-        from("`drive':\BShrs`year'\BSdata\BS") to("tmp/hrs/") replace
+    copy `"`hrs_release'/h`yr'core/H`yr'LB_R.da"' `"`tmp'/hrs/H`yr'LB_R.da"', replace
+    filefilter `"`hrs_release'/h`yr'core/H`yr'LB_R.dct"' `"`tmp'/hrs/H`yr'LB_R.dct"', ///
+        from("`drive':\BShrs`year'\BSdata\BS") to(`"`tmp'/hrs/"') replace
     
     preserve
-        qui infile using tmp/hrs/H`yr'LB_R.dct, clear
+        qui infile using `"`tmp'/hrs/H`yr'LB_R.dct"', clear
         ren _all, lower
         while 1 {
             gettoken varnames anything: anything, match(paren)
@@ -30,14 +34,22 @@ prog _lb_r
     
 end
 
-loc varlist (lb015 any_frnds) (lb018 no_frnds) (lb007 any_kids) (lb010 no_kids) (lb011 any_fam) (lb014 no_fam) (lb020a companion) (lb020b leftout) (lb020c isolated)
-_lb_r `varlist', year(2006) prefix(k) drive(C)
-_lb_r `varlist', year(2008) prefix(l)
-_lb_r `varlist', year(2010) prefix(m)
-_lb_r `varlist', year(2012) prefix(n)
+loc varlist (lb015 any_frnds) (lb018 no_frnds) (lb007 any_kids) (lb010 no_kids) ///
+            (lb011 any_fam) (lb014 no_fam) (lb020a companion) (lb020b leftout) ///
+            (lb020c isolated)
+_lb_r `varlist', year(2006) prefix(k) drive(C) tmp(`"`tmp'"') hrs_release(`"`hrs_release'"')
+_lb_r `varlist', year(2008) prefix(l) tmp(`"`tmp'"') hrs_release(`"`hrs_release'"')
+_lb_r `varlist', year(2010) prefix(m) tmp(`"`tmp'"') hrs_release(`"`hrs_release'"')
+_lb_r `varlist', year(2012) prefix(n) tmp(`"`tmp'"') hrs_release(`"`hrs_release'"')
 
-_lb_r (lb014 any_frnds) (lb017 no_frnds) (lb006 any_kids) (lb009 no_kids) (lb010 any_fam) (lb013 no_fam) (lb019a companion) (lb019b leftout) (lb019c isolated), year(2014) prefix(o)
-_lb_r (lb014 any_frnds) (lb017 no_frnds) (lb006 any_kids) (lb009 no_kids) (lb010 any_fam) (lb013 no_fam) (lb019a companion) (lb019b leftout) (lb019c isolated), year(2016) prefix(p)
+_lb_r (lb014 any_frnds) (lb017 no_frnds) (lb006 any_kids) (lb009 no_kids) ///
+      (lb010 any_fam) (lb013 no_fam) (lb019a companion) (lb019b leftout) ///
+      (lb019c isolated), ///
+      year(2014) prefix(o) tmp(`"`tmp'"') hrs_release(`"`hrs_release'"')
+_lb_r (lb014 any_frnds) (lb017 no_frnds) (lb006 any_kids) (lb009 no_kids) ///
+      (lb010 any_fam) (lb013 no_fam) (lb019a companion) (lb019b leftout) ///
+      (lb019c isolated), ///
+      year(2016) prefix(p) tmp(`"`tmp'"') hrs_release(`"`hrs_release'"')
 
 foreach i of varlist any_frnds any_kids any_fam {
 recode `i' 1=1 5=0 7=.
@@ -65,4 +77,4 @@ replace hhid="520845" if hhid=="529766" & yr=="10"
 
 compress
 isid hhid pn yr, so
-save tmp/hrs/social, replace
+save `"`tmp'/hrs/social"', replace

@@ -1,8 +1,9 @@
 version 15.1
+include config
 clear
 
-use hhid-id using tmp/hrs/tracker
-merge 1:1 hhid pn yr using tmp/hrs/social, keepusing(companion leftout isolated)
+use hhid-id using `"`tmp'/hrs/tracker"'
+merge 1:1 hhid pn yr using `"`tmp'/hrs/social"', keepusing(companion leftout isolated)
 
 destring yr, gen(yr_)
 bysort hhid pn (yr): replace gender=gender[_n-1] if mi(gender)
@@ -42,4 +43,4 @@ replace loneliness=loneliness*3
 
 compress
 isid hhid pn yr, so
-save tmp/hrs/loneliness_dataset, replace
+save `"`tmp'/hrs/loneliness_dataset"', replace

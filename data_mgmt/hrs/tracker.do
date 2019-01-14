@@ -2,16 +2,16 @@
 
 version 15.1
 clear
+include config
 set more off
 
-cap mkdir tmp
-cap mkdir tmp/hrs
+cap mkdir `"`tmp'/hrs"'
 
 // Read tracker file
-copy data/hrs/trk2014/TRK2014TR_R.da tmp/hrs/TRK2014TR_R.da, replace
-filefilter data/hrs/trk2014/TRK2014TR_R.dct tmp/hrs/TRK2014TR_R.dct, ///
-    from("c:\BStrk2014\BSdata\BS") to("tmp/hrs/") replace
-infile using tmp/hrs/TRK2014TR_R.dct
+copy `"`hrs_release'/trk2014/TRK2014TR_R.da"' `"`tmp'/hrs/TRK2014TR_R.da"', replace
+filefilter `"`hrs_release'/trk2014/TRK2014TR_R.dct"' `"`tmp'/hrs/TRK2014TR_R.dct"', ///
+    from("c:\BStrk2014\BSdata\BS") to(`"`tmp'/hrs/"') replace
+infile using `"`tmp'/hrs/TRK2014TR_R.dct"'
 ren _all, lower
 
 isid hhid pn, so
@@ -66,4 +66,4 @@ lab var wgtr "RESPONDENT LEVEL WEIGHT"
 
 compress
 isid hhid pn yr, so
-save tmp/hrs/tracker, replace
+save `"`tmp'/hrs/tracker"', replace

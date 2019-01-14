@@ -38,5 +38,4 @@ egen bc10 = cut(yob), at(1920(10)1970)
 compress
 isid su_id yr, so
 datasig confirm using signatures/hrs, strict
-cap mkdir tmp
 save `"`tmp'/hrs"', replace
