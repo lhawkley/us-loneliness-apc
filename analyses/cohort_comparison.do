@@ -144,3 +144,6 @@ sc y b if model==1, ms(circle) msize(*0.75) mcolor("0 63 92") ///
     xlab(-1.5(0.5)1.5, labsize(*0.9)) plotregion(lcolor(none)) ///
     legend(order(1 "Born 1920-47" 3 "Born 1948-65") cols(1) ring(0) pos(3) size(*0.9)) ///
     xtitle("Coefficient (95% CI)")
+
+gr export `"`tmp'/loneliness_covars.pdf"', replace
+gr export `"`tmp'/loneliness_covars.eps"', replace
