@@ -124,12 +124,10 @@ end
 
 
 // Loneliness by age and wave (changes over time)
-reg loneliness age_s* i.wave [pweight=weight_sel], vce(cluster su_id)
 reg loneliness age_s* i.wave [pweight=weight_sel2], vce(cluster su_id)
 mixed loneliness age_s* i.wave || su_id:, pweight(weight_sel2) vce(robust)
 test 2.wave = 3.wave
 
-ologit loneliness age_s* i.wave [pweight=weight_sel], vce(cluster su_id)
 ologit loneliness age_s* i.wave [pweight=weight_sel2], vce(cluster su_id)
 meologit loneliness age_s* i.wave || su_id:, pweight(weight_sel2) vce(robust)
 test 2.wave = 3.wave
@@ -194,16 +192,15 @@ meologit loneliness age_s2-age_s4 i.wave bc_s* || su_id:, pweight(weight_sel2) /
 testparm age_s*
 testparm i.wave
 testparm bc_s*
-plot_age, name(age2) title("D")
-plot_cohort, name(cohort2) title("E")
-plot_wave, name(wave2) title("F")
 
 // Yet another specification; still no evidence of any cohort effects
-gen byte w2 = (wave==2)
-meologit loneliness age_s* w2 bc_s* || su_id:, pweight(weight_sel2) ///
+meologit loneliness age_s* 2.wave bc_s* || su_id:, pweight(weight_sel2) ///
     vce(robust)
 testparm age_s*
 testparm bc_s*
+plot_age, name(age2) title("D")
+plot_cohort, name(cohort2) title("E")
+plot_wave, name(wave2) title("F")
 
 gr combine age1 cohort1 wave1 age2 cohort2 wave2, cols(3) ycommon name(apc, replace)
 mkdirp tmp
@@ -228,10 +225,10 @@ meologit loneliness age_s1 age_s2 i.wave ///
     || su_id:, pweight(weight_sel2) vce(robust)
 plot_age, keep(female aa hisp other lths somecol college physhlth ///
                comorb adls liv_alone liv_other alters clsrel framt) ///
-          name(age3) title("D") saving(`"`tmp'/apc/nshap_age_adj"')
+          name(age3) title("D") saving(`"`tmp'/apc/nshap_age_adj"') replace
 plot_wave, keep(female aa hisp other lths somecol college physhlth ///
                 comorb adls liv_alone liv_other alters clsrel framt) ///
-           name(wave3) title("E") saving(`"`tmp'/apc/nshap_period_adj"')
+           name(wave3) title("E") saving(`"`tmp'/apc/nshap_period_adj"') replace
 
 gr combine age1 cohort1 wave1 age3 wave3, cols(3) ycommon name(apc2, replace)
 gr export `"`tmp'/apc/apc_nshap2.pdf"', replace
