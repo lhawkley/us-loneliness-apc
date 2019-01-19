@@ -1,9 +1,10 @@
 // Project settings (modify as necessary)
+// Paths should be relative to root of project directory or absolute
 
 adopath + ./ado
 
 // Location of NSHAP official release
-loc nshap_release data/nshap-3.0b3
+loc nshap_release data/nshap
 
 // Location of raw NSHAP CAPI files
 loc nshap_capi data/nshap_capi
