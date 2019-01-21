@@ -202,4 +202,3 @@ plot_cohort, name(cohort2) title("E") yrspline
 gr combine age1 cohort1 wave1 age2 cohort2, cols(3) ycommon name(apc, replace)
 mkdirp tmp
 gr export `"`tmp'/apc/apc_hrs.pdf"', replace
-gr export `"`tmp'/apc/apc_hrs.eps"', replace

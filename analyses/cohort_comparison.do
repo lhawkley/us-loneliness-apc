@@ -146,4 +146,3 @@ sc y b if model==1, ms(circle) msize(*0.75) mcolor("0 63 92") ///
     xtitle("Coefficient (95% CI)")
 
 gr export `"`tmp'/loneliness_covars.pdf"', replace
-gr export `"`tmp'/loneliness_covars.eps"', replace

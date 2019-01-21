@@ -113,7 +113,6 @@ line p age if gender==2 & !hrs, lcolor("0 63 92") lpattern(shortdash) ///
 
 gr combine men women, rows(1) ycommon name(hrs14)
 gr export `"`tmp'/loneliness_hrs14.pdf"', replace
-gr export `"`tmp'/loneliness_hrs14.eps"', replace
 
 
 // Plot 2015-16
@@ -136,4 +135,3 @@ line p age if gender==2 & !hrs, lcolor("0 63 92") lpattern(shortdash) ///
 
 gr combine men women, rows(1) ycommon name(hrs16)
 gr export `"`tmp'/loneliness_hrs16.pdf"', replace
-gr export `"`tmp'/loneliness_hrs16.eps"', replace

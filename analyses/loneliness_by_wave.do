@@ -78,4 +78,3 @@ line p11 age, lcolor("0 63 92") || rarea lb11 ub11 age, color("0 63 92%40") lwid
 gr combine men women, rows(1) ycommon
 mkdirp tmp
 gr export tmp/loneliness.pdf, replace
-gr export tmp/loneliness.eps, replace

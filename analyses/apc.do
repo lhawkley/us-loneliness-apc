@@ -205,7 +205,6 @@ plot_wave, name(wave2) title("F")
 gr combine age1 cohort1 wave1 age2 cohort2 wave2, cols(3) ycommon name(apc, replace)
 mkdirp tmp
 gr export `"`tmp'/apc/apc_nshap.pdf"', replace
-gr export `"`tmp'/apc/apc_nshap.eps"', replace
 
 
 // Plot age and survey year effects for full model
@@ -232,4 +231,3 @@ plot_wave, keep(female aa hisp other lths somecol college physhlth ///
 
 gr combine age1 cohort1 wave1 age3 wave3, cols(3) ycommon name(apc2, replace)
 gr export `"`tmp'/apc/apc_nshap2.pdf"', replace
-gr export `"`tmp'/apc/apc_nshap2.eps"', replace

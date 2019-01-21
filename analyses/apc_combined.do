@@ -82,4 +82,3 @@ tw rcap ub lb wave, lcolor("0 63 92") ///
 
 gr combine g1 g2 g3 g4 g5, cols(3) ycommon
 gr export `"`tmp'/apc/apc_combined.pdf"', replace
-gr export `"`tmp'/apc/apc_combined.eps"', replace
