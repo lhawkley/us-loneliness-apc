@@ -1,5 +1,5 @@
 This package contains code to perform analyses reported in "Are U.S. older
-adults getting lonelier?: Age, period, and cohort differences" by Hawkly et
+adults getting lonelier?: Age, period, and cohort differences" by Hawkley et
 al. (2019).
 
 These analyses use data from Waves 1–3 of the National Social Life, Health and
