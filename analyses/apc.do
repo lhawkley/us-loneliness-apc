@@ -198,8 +198,11 @@ meologit loneliness age_s* 2.wave bc_s* || su_id:, pweight(weight_sel2) ///
     vce(robust)
 testparm age_s*
 testparm bc_s*
-plot_age, name(age2) title("D")
-plot_cohort, name(cohort2) title("E")
+// 1 unit increase -> 10.7 year increase in yob
+// reg yob bc_s1
+lincom bc_s1, or
+plot_age, name(age2) title("D") saving(`"`tmp'/apc/nshap_age2"') replace
+plot_cohort, name(cohort2) title("E") saving(`"`tmp'/apc/nshap_cohort2"') replace
 plot_wave, name(wave2) title("F")
 
 gr combine age1 cohort1 wave1 age2 cohort2 wave2, cols(3) ycommon name(apc, replace)
@@ -231,3 +234,11 @@ plot_wave, keep(female aa hisp other lths somecol college physhlth ///
 
 gr combine age1 cohort1 wave1 age3 wave3, cols(3) ycommon name(apc2, replace)
 gr export `"`tmp'/apc/apc_nshap2.pdf"', replace
+
+
+// Compute VIFs
+reg loneliness age_s* i.wave bc_s2-bc_s4
+estat vif
+
+reg loneliness loneliness age_s* 2.wave bc_s*
+estat vif

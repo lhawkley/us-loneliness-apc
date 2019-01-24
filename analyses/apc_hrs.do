@@ -196,9 +196,20 @@ meologit loneliness age_s* yr_s2-yr_s4 bc_s* || su_id:, pweight(wgtr2) ///
 testparm age_s*
 testparm yr_s*
 testparm bc_s*
-plot_age, name(age2) title("D") yrspline
-plot_cohort, name(cohort2) title("E") yrspline
+// 1 unit increase -> 10.2 year increase in yob
+// reg yob bc_s1
+lincom bc_s1, or
+plot_age, name(age2) title("D") yrspline saving(`"`tmp'/apc/hrs_age2"') replace
+plot_cohort, name(cohort2) title("E") yrspline saving(`"`tmp'/apc/hrs_cohort2"') replace
 
 gr combine age1 cohort1 wave1 age2 cohort2, cols(3) ycommon name(apc, replace)
 mkdirp tmp
 gr export `"`tmp'/apc/apc_hrs.pdf"', replace
+
+
+// Compute VIFs
+qui reg loneliness age_s* i.wave bc_s2-bc_s4
+estat vif
+
+qui reg loneliness loneliness age_s* yr_s2-yr_s4 bc_s* 
+estat vif

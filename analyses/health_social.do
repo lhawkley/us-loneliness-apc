@@ -52,6 +52,13 @@ marginsplot, name(age_combined, replace)
 meologit, or
 lincom 3.wave - 2.wave, or
 
+// Compare effects of covariate groups on association with age
+meologit loneliness i.wave c.age_dev_70##c.age_dev_70 i.gender i.ethgrp ib2.educ ///
+    || su_id:, pweight(weight_sel2) vce(robust)
+qui margins, predict(xb) at(age_dev_70=(-2(1)2)) nose
+marginsplot, name(age, replace)
+gr combine age age_health age_social age_combined, xcommon ycommon
+
 // Test linear effect of education
 meologit loneliness i.wave c.age_dev_70##c.age_dev_70 i.gender i.ethgrp educ ///
     physhlth comorb adls ///
